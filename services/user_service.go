@@ -46,3 +46,12 @@ func AuthenticateUser(username, password string) (string, error) {
 
 	return token, nil
 }
+
+func GetUserByID(userID string) (models.User, error) {
+	var user models.User
+	if err := db.DB.Where("id = ?", userID).First(&user).Error; err != nil {
+		return models.User{}, err
+	}
+
+	return user, nil
+}
