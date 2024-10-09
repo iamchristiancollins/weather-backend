@@ -1,0 +1,13 @@
+server:
+  port: "8080"
+
+database:
+  host: "db"             # Use "db" when using Docker Compose
+  port: "5432"
+  user: "postgres"
+  password: "postgres"
+  dbname: "weather_app"
+  sslmode: "disable"
+
+jwt:
+  secretkey: "your_secret_key"
