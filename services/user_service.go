@@ -1,17 +1,48 @@
 package services
 
 import (
+	"errors"
+
 	"github.com/iamchristiancollins/weather-backend/db"
-    "github.com/iamchristiancollins/weather-backend/models"
-    "golang.org/x/crypto/bcrypt"
+	"github.com/iamchristiancollins/weather-backend/models"
+	"github.com/iamchristiancollins/weather-backend/utils"
+	"golang.org/x/crypto/bcrypt"
 )
 
-func CreateUser(user *models.User) error {
+func CreateUser(user *models.User) (models.User, error) {
 	//hash password and save user
-	panic("not implemented yet")
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return models.User{}, err
+	}
+
+	newUser := models.User{
+		Username: user.Username,
+		Password: string(hashedPassword),
+	}
+
+	if err := db.DB.Create(&newUser).Error; err != nil {
+		return models.User{}, err
+	}
+
+	return newUser, nil
 }
 
-func AuthenticateUser(username, password string) (models.User, error) {
+func AuthenticateUser(username, password string) (string, error) {
 	//authenticate user credentials
-	panic("not implemented yet")
+	var user models.User
+	if err := db.DB.Where("username = ?", username).First(&user).Error; err != nil {
+		return "", errors.New("user not found")
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(password), []byte(password)); err != nil {
+		return "", errors.New("incorrect password")
+	}
+
+	token, err := utils.GenerateJWT(user.ID)
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
 }
