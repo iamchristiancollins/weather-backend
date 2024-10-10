@@ -3,6 +3,7 @@ package services
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/iamchristiancollins/weather-backend/models"
 	"net/http"
 )
 
@@ -25,4 +26,11 @@ func GetWeatherData(location string) (*WeatherResponse, error) {
 		return nil, err
 	}
 	return &weatherData, nil
+}
+
+func GenerateRecommendations(userID uint, temperature int) (string, error) {
+	// Fetch user ratings around the given temperature
+	ratings = models.Rating
+	// Generate recommendations based on user data
+	return "Recommendation based on user ratings and temperature", nil
 }
