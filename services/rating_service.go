@@ -1,11 +1,11 @@
 package services
 
 import (
-	"github.com/yourusername/yourproject-backend/db"
-	"github.com/yourusername/yourproject-backend/models"
+	"github.com/iamchristiancollins/weather-backend/db"
+	"github.com/iamchristiancollins/weather-backend/models"
 )
 
-func CreateRating(userID string, input models.RatingInput) (models.Rating, error) {
+func CreateRating(userID uint, input models.RatingInput) (models.Rating, error) {
 	rating := models.Rating{
 		UserID:       userID,
 		Temperature:  input.Temperature,
