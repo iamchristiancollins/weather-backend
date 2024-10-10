@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-
 	"github.com/iamchristiancollins/weather-backend/db"
 	"github.com/iamchristiancollins/weather-backend/models"
 	"github.com/iamchristiancollins/weather-backend/utils"
@@ -32,11 +31,11 @@ func AuthenticateUser(input models.LoginInput) (string, error) {
 	//authenticate user credentials
 	var user models.User
 	if err := db.DB.Where("username = ?", input.Username).First(&user).Error; err != nil {
-		return "", errors.New("user not found")
+		return "", errors.New("incorrect username or password")
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(input.Password), []byte(input.Password)); err != nil {
-		return "", errors.New("incorrect password")
+		return "", errors.New("incorrect username or password")
 	}
 
 	token, err := utils.GenerateJWT(user.ID)
