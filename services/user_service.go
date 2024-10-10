@@ -33,8 +33,15 @@ func AuthenticateUser(input models.LoginInput) (string, error) {
 	if err := db.DB.Where("username = ?", input.Username).First(&user).Error; err != nil {
 		return "", errors.New("incorrect username or password")
 	}
+	query := db.DB.Where("username = ?", input.Username)
+	result := query.Find(&user)
 
-	if err := bcrypt.CompareHashAndPassword([]byte(input.Password), []byte(input.Password)); err != nil {
+	if result.Error != nil {
+		return "", errors.New("incorrect username or password")
+	}
+
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password))
+	if err != nil {
 		return "", errors.New("incorrect username or password")
 	}
 
@@ -48,8 +55,12 @@ func AuthenticateUser(input models.LoginInput) (string, error) {
 
 func GetUserByID(userID string) (models.User, error) {
 	var user models.User
-	if err := db.DB.Where("id = ?", userID).First(&user).Error; err != nil {
-		return models.User{}, err
+
+	query := db.DB.Where("id = ?", userID)
+	result := query.First(&user)
+
+	if result.Error != nil {
+		return models.User{}, result.Error
 	}
 
 	return user, nil

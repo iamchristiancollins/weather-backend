@@ -19,3 +19,17 @@ func CreateRating(userID uint, input models.RatingInput) (models.Rating, error) 
 
 	return rating, nil
 }
+
+func GetRatingsByUserID(userID uint) ([]models.Rating, error) {
+	var ratings []models.Rating
+	query := db.DB.Where("user_id = ?", userID)
+
+	// Execute the query and store the result
+	result := query.Find(&ratings)
+	// Check for errors
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	// Return the ratings and no error
+	return ratings, nil
+}
