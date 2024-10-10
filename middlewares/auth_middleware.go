@@ -24,7 +24,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		tokenString := parts[1]
 
-		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		token, _ := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 			return []byte(config.AppConfig.JWT.SecretKey), nil
 		})
 
