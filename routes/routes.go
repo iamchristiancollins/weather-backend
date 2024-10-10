@@ -19,7 +19,8 @@ func SetupRouter() *gin.Engine {
 	{
 		authorized.GET("/user", controllers.GetUser)
 		authorized.POST("/ratings", controllers.SubmitRating)
-		authorized.GET("/recommendations", controllers.GetRecommendations)
+		authorized.GET("ratings", controllers.GetRatings)
+		// authorized.GET("/recommendations", controllers.GetRecommendations)
 	}
 
 	return router
