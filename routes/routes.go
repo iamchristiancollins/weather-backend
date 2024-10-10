@@ -2,8 +2,8 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/iamchristiancollins/weather-backend/controllers"
 	"github.com/iamchristiancollins/weather-backend/middlewares"
+	"github.com/iamchristiancollins/weather-backend/controllers"
 )
 
 func SetupRouter() *gin.Engine {

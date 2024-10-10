@@ -7,25 +7,41 @@ import (
 	"net/http"
 )
 
-type RatingController {
-	ratingService *services.RatingService
-}
-
 func SubmitRating(c *gin.Context) {
 	var input models.RatingInput
-	if err := c.ShouldBindJSON(&input); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
+	err := c.ShouldBindJSON(&input)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-    userID := c.GetString("userID")
+	userID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Error with authentication"})
+		return
+	}
 
-    rating, err := services.CreateRating(userID, input)
-    if err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-        return
-    }
+	rating, err := services.CreateRating(uint(userID.(float64)), input)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
-    c.JSON(http.StatusCreated, gin.H{"rating": rating})
+	c.JSON(http.StatusCreated, gin.H{"rating": rating})
 }
+
+func GetRatings(c *gin.Context) {
+	userID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User ID not found"})
+		return
+	}
+
+	ratings, err := services.GetRatingsByUserID(uint(userID.(float64)))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"ratings": ratings})
 }
